@@ -31,14 +31,16 @@ def processArguments(argv):
         # <outputdb> - name of the output db file
         print ("Please use: python search_images.py -i <inputdb> -o <outputdb>")
     else:
-        findContent(out_db, in_db)
+        return (out_db, in_db)
 
 # Reads search term from in_db, searchs imgur,
 # adds resulting links to out_db
 def findContent(out_db, in_db=""):
-    print("STARTING IMAGE SEARCH, PLEASE WAIT")
-
     out_db = sqlite3.connect(out_db)
+    init_db(out_db)
+    search_imgur(out_db)
+
+def init_db(out_db):
     out_c = out_db.cursor()
     out_c.execute('''CREATE TABLE IF NOT EXISTS imgs
         (link TEXT PRIMARY KEY,
@@ -48,7 +50,6 @@ def findContent(out_db, in_db=""):
         (tag TEXT PRIMARY KEY,
         related TEXT)''')
     out_db.commit()
-    search_imgur(out_db)
 
 def search_imgur(out_db):
     client_id = 'f2e81937fa7580c'
@@ -98,4 +99,7 @@ def find_related_tags(query):
     return alltags
 
 if __name__ == "__main__":
-    processArguments(sys.argv[1:])
+    args = processArguments(sys.argv[1:])
+    if args != None
+        print("STARTING IMAGE SEARCH, PLEASE WAIT")
+        findContent(*args)
