@@ -23,7 +23,12 @@ def search_imgur(out_db):
                 if (check != None):
                     continue
                 i = 0
-                related = ','.join(find_related_tags(tag))
+                related = find_related_tags(tag)
+                for rtag in related:
+                    values = (tag, rtag)
+                    out_c.execute('''INSERT OR IGNORE INTO related_tags(source, target) VALUES(?, ?)''', values)
+                    out_db.commit()
+                related = ','.join(related)
                 values = (tag, related)
                 out_c.execute('''INSERT OR IGNORE INTO tags(tag, related) VALUES(?, ?)''', values)
                 out_db.commit()
